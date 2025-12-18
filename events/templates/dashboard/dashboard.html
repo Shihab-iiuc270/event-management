@@ -1,0 +1,203 @@
+{% extends "dashboard/home.html" %}
+{% block title %}User Dashboard{% endblock title %}
+{% block home %}
+  <body class="bg-amber-200 p-2">
+    <div class="max-w-[1400px] mx-auto">
+      <!-- Header  -->
+      <header class="flex justify-between items-center mb-8">
+        <h1 class="text-2xl font-semibold">Dashboard</h1>
+        <div class="flex items-center gap-4">
+          <button class="p-2 rounded-full hover:bg-gray-100 relative">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
+              />
+            </svg>
+          </button>
+          <button
+            class="w-10 h-10 bg-blue-500 rounded-full text-white font-semibold"
+          >
+            B
+          </button>
+        </div>
+      </header>
+
+      <main>
+         {% comment %} Stats Grid  {% endcomment %}
+        {% comment %} <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8"> {% endcomment %}
+        <div class="grid grid-cols-5 gap-6 mb-8">
+          <!-- Total Task  -->
+           <a href="{% url "user" %}?type=all_event">
+            <div class="bg-blue-400 rounded-xl p-6 shadow-sm">
+            <h3 class="text-sm font-medium text-gray-900 mb-4">TOTAL EVENT</h3>
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-3xl font-semibold mb-1">{{counts.total}}</p>
+                {% comment %} <p class="text-gray-500 text-sm">11 last month</p> {% endcomment %}
+              </div>
+              <div class="bg-blue-100 p-3 rounded-full">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  class="w-6 h-6 text-blue-600"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+           </a>
+          
+          <!-- Completed Task  -->
+        <a href="{% url "user" %}?type=todays_event">
+          <div class="bg-blue-400 rounded-xl p-6 shadow-sm">
+            <h3 class="text-sm font-medium text-gray-900 mb-4">
+              TODAY'S EVENT
+            </h3>
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-3xl font-semibold mb-1">{{counts.todays_event}}</p>
+                {% comment %} <p class="text-gray-500 text-sm">11 last month</p> {% endcomment %}
+              </div>
+              <div class="bg-green-100 p-3 rounded-full">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  class="w-6 h-6 text-green-600"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </a>
+          <!-- Task In Progress  -->
+        <a href="{% url "user" %}?type=upcoming_event">
+          <div class="bg-blue-400 rounded-xl p-6 shadow-sm">
+            <h3 class="text-sm font-medium text-gray-900 mb-4">
+              UPCOMING EVENT
+            </h3>
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-3xl font-semibold mb-1">{{counts.upcoming_events}}</p>
+                {% comment %} <p class="text-gray-500 text-sm">11 last month</p> {% endcomment %}
+              </div>
+              <div class="bg-yellow-100 p-3 rounded-full">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  class="w-6 h-6 text-yellow-600"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </a>
+        {% comment %} past events{% endcomment %}
+        <a href="{% url "user" %}?type=past_event">
+          <div class="bg-blue-400 rounded-xl p-6 shadow-sm">
+            <h3 class="text-sm font-medium text-gray-900 mb-4">PAST EVENT</h3>
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-3xl font-semibold mb-1">{{counts.previous_events}}</p>
+                {% comment %} <p class="text-gray-500 text-sm">11 last month</p> {% endcomment %}
+              </div>
+              <div class="bg-purple-100 p-3 rounded-full">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  class="w-6 h-6 text-purple-600"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </a>
+        {% comment %} Participants {% endcomment %}
+        <a href="{% url "user" %}?type=past_event">
+          <div class="bg-blue-400 rounded-xl p-6 shadow-sm">
+            <h3 class="text-sm font-medium text-gray-900 mb-4">TOTAL PARTICIPANTS</h3>
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-3xl font-semibold mb-1">{{counts.total_participants}}</p>
+                {% comment %} <p class="text-gray-500 text-sm">11 last month</p> {% endcomment %}
+              </div>
+              <div class="bg-purple-100 p-3 rounded-full">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  class="w-6 h-6 text-red-600"
+                >
+                       <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </a>
+        </div>
+{% if messages %}
+    {% for message in messages %}
+        <div class="px-2 py-1 
+            {% if 'success' in message.tags %} bg-green-500 text-white 
+            {% elif 'error' in message.tags %} bg-red-500 text-white 
+            {% else %} bg-gray-200 
+            {% endif %}
+        ">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+        {% block tasks %}
+        
+        {% endblock tasks %}
+        
+      </main>
+    </div>
+  </body>
+</html>
+{% endblock home %}
