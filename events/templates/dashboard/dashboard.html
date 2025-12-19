@@ -5,7 +5,7 @@
     <div class="max-w-[1400px] mx-auto">
       <!-- Header  -->
       <header class="flex justify-between items-center mb-8">
-        <h1 class="text-2xl font-semibold">Dashboard</h1>
+        <h1  id='dashboard' class="text-2xl font-semibold">Dashboard</h1>
         <div class="flex items-center gap-4">
           <button class="p-2 rounded-full hover:bg-gray-100 relative">
             <svg
@@ -36,13 +36,13 @@
         {% comment %} <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8"> {% endcomment %}
         <div class="grid grid-cols-5 gap-6 mb-8">
           <!-- Total Task  -->
-           <a href="{% url "user" %}?type=all_event">
+           <a href="{% url "user" %}?type=all_event#all-events">
             <div class="bg-blue-400 rounded-xl p-6 shadow-sm">
             <h3 class="text-sm font-medium text-gray-900 mb-4">TOTAL EVENT</h3>
             <div class="flex justify-between items-start">
               <div>
                 <p class="text-3xl font-semibold mb-1">{{counts.total}}</p>
-                {% comment %} <p class="text-gray-500 text-sm">11 last month</p> {% endcomment %}
+                {% comment %} <p class="text-gray-700 text-sm">Click and Go Events to See</p> {% endcomment %}
               </div>
               <div class="bg-blue-100 p-3 rounded-full">
                 <svg
@@ -65,7 +65,7 @@
            </a>
           
           <!-- Completed Task  -->
-        <a href="{% url "user" %}?type=todays_event">
+        <a href="{% url "user" %}?type=todays_event#all-events">
           <div class="bg-blue-400 rounded-xl p-6 shadow-sm">
             <h3 class="text-sm font-medium text-gray-900 mb-4">
               TODAY'S EVENT
@@ -95,7 +95,7 @@
           </div>
         </a>
           <!-- Task In Progress  -->
-        <a href="{% url "user" %}?type=upcoming_event">
+        <a href="{% url "user" %}?type=upcoming_event#all-events">
           <div class="bg-blue-400 rounded-xl p-6 shadow-sm">
             <h3 class="text-sm font-medium text-gray-900 mb-4">
               UPCOMING EVENT
@@ -125,7 +125,7 @@
           </div>
         </a>
         {% comment %} past events{% endcomment %}
-        <a href="{% url "user" %}?type=past_event">
+        <a href="{% url "user" %}?type=past_event#all-events">
           <div class="bg-blue-400 rounded-xl p-6 shadow-sm">
             <h3 class="text-sm font-medium text-gray-900 mb-4">PAST EVENT</h3>
             <div class="flex justify-between items-start">
