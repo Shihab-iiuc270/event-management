@@ -35,7 +35,7 @@ class StyledFormMixin:
 class EventModelForm(StyledFormMixin, forms.ModelForm):
     class Meta:
         model = Event
-        fields = ['name', 'description', 'date', 'time', 'location', 'category', 'assign_to']
+        fields = ['name', 'description', 'date', 'time', 'location', 'category']
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
             'time': forms.TimeInput(attrs={'type': 'time'}),
@@ -51,7 +51,10 @@ class EventModelForm(StyledFormMixin, forms.ModelForm):
 class ParticipantModelForm(StyledFormMixin, forms.ModelForm):
     class Meta:
         model = Participant
-        fields = ['name', 'email']
+        fields = ['name', 'email','events']
+        widgets = {
+            'events': forms.CheckboxSelectMultiple
+        }
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
