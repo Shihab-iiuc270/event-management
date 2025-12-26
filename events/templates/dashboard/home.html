@@ -91,6 +91,18 @@
     
   </div>
 </div>
+  <div>
+                {% if messages %}
+    {% for message in messages %}
+      <div class="mb-2 px-3 py-2 rounded text-sm
+        {% if 'success' in message.tags %} bg-green-500 text-white
+        {% elif 'error' in message.tags %} bg-red-500 text-white
+        {% else %} bg-gray-200 {% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+              </div>
 
       <!-- All Events Section -->
 <!-- ALL EVENTS SECTION -->
@@ -203,7 +215,7 @@
 
   </div>
 </div>
-
+            
             <div class="mt-6 sm:mt-8">
             {% block home %}
             
