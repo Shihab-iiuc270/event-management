@@ -106,7 +106,7 @@
 
       <!-- All Events Section -->
 <!-- ALL EVENTS SECTION -->
-<div id="all-events" class="max-w-7xl mx-auto px-4 mb-10">
+<div id="all-events" class="bg-gray-900 my-auto p-6 mx-auto mb-10">
 
   <!-- HEADER -->
   <div class="bg-slate-700 rounded-xl p-4 sm:p-6 mb-6">
@@ -171,7 +171,7 @@
   </div>
 
   <!-- EVENTS GRID -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div class="grid  grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
     {% for event in events %}
     <div class="bg-amber-300 rounded-lg shadow border p-4 hover:shadow-lg transition">
@@ -208,7 +208,7 @@
       </a>
     </div>
     {% empty %}
-      <p class="col-span-full text-center text-gray-900">
+      <p class="col-span-full text-center text-white">
         No events found.
       </p>
     {% endfor %}
