@@ -87,23 +87,23 @@ WSGI_APPLICATION = 'event_management.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'event_management',
-        'USER': 'postgres',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': '5432'
-    }
-}
 # DATABASES = {
-#     'default': dj_database_url.config(
-#         # Replace this value with your local database's connection string.
-#         default='postgresql://event_manager_0p2o_user:KU5NoX32c2A895Vl3rvxXMVAMMKy31fv@dpg-d52hk363jp1c73c41dng-a.oregon-postgres.render.com/event_manager_0p2o',
-#         conn_max_age=600
-#     )
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'event_management',
+#         'USER': 'postgres',
+#         'PASSWORD': 'password',
+#         'HOST': 'localhost',
+#         'PORT': '5432'
+#     }
 # }
+DATABASES = {
+    'default': dj_database_url.config(
+        # Replace this value with your local database's connection string.
+        default='postgresql://event_manager_nig6_user:Wfby9MCSD86hhZXIJupMCy6wexmtsSDF@dpg-d57astogjchc739g61kg-a.virginia-postgres.render.com/event_manager_nig6',
+        conn_max_age=600
+    )
+}
 # https://meet.google.com/mrm-dhha-tkz
 
 
