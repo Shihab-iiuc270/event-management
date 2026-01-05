@@ -1,7 +1,7 @@
-{% extends "dashboard/base.html" %}
+{% extends "base.html" %}
 {% block title %}User Dashboard{% endblock title %}
 
-{% block dashboard %}
+{% block content %}
 
 <div class="max-w-[1400px] mx-auto px-3 sm:px-4">
 
@@ -28,7 +28,7 @@
   </header>
 
   <!-- STATS GRID -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6 mb-8">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-8">
 
     <!-- TOTAL EVENTS -->
     <a href="{% url 'user' %}?type=All" class="block active:scale-95 transition">
@@ -120,7 +120,8 @@
     </a>
 
     <!-- PARTICIPANTS -->
-         <a href="{% url 'list-participant' %}" class="block active:scale-95 transition">
+         {% comment %} <a href="{% url 'list-participant' %}" class="block active:scale-95 transition"> 
+         <a href="" class="block active:scale-95 transition">
 
     <div class="bg-red-400 rounded-xl p-4 sm:p-6 shadow-sm">
       <h3 class="text-xs sm:text-sm font-medium text-gray-900 mb-3 sm:mb-4">
@@ -128,7 +129,7 @@
       </h3>
       <div class="flex justify-between items-start">
         <p class="text-2xl sm:text-3xl font-semibold">
-          {{ counts.total_participants }}
+           {{ counts.total_participants }} 
         </p>
         <div class="bg-red-100 p-3 rounded-full">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -140,7 +141,7 @@
         </div>
       </div>
     </div>
-  </a>
+  </a> {% endcomment %}
 
   </div>
 
@@ -161,4 +162,4 @@
   {% block tasks %}{% endblock tasks %}
 </div>
 
-{% endblock dashboard %}
+{% endblock content %}

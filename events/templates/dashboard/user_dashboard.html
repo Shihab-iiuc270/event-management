@@ -2,140 +2,103 @@
 {% block title %}User Dashboard{% endblock title %}
 {% block tasks %}
 
-
-{% comment %} <!-- Today's Events Section -->
-<div class="bg-blue-400 p-6 rounded-lg shadow mb-8">
-  <div class="flex  justify-between items-center mb-6">
-    <h2 class="text-2xl font-bold">Today's Events</h2>
-    <div class="flex items-center space-x-4">
-      <span class="bg-purple-100 text-rose-600 px-3 py-1 rounded-full text-sm font-medium">
-        {{todays_event}} events today
-      </span>
-     {% comment %} <a href="{% url "create" %}"><button class="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700">
-        + Add Event
-      </button>
-    </a> {% endcomment %}
-    {% comment %} </div>
-  </div>
-         {% endcomment %}
-  <!-- Today's Events Grid - 4 cards -->
-  <div class="grid grid-cols-1  sm:grid-cols-2 lg:grid-cols-4 gap-4">
-    <!-- Event 1 -->
-     {% for event in today %}
-    <div class=" bg-gray-100 border rounded-lg  border-gray-500 pl-4 py-3 px-2">
-      <div class="flex justify-between items-start ">
-        <div>
-          <h3 class="font-semibold text-gray-800">{{event.name}}</h3>
-          <p class="text-sm text-gray-800 mt-1">{{event.description}}</p>
-        </div>
-        <span class="text-sm font-medium text-purple-600">{{event.date}}</span>
-      </div>
-      <div class="mt-2 flex items-center text-sm text-gray-600">
-        <span class="mr-2">📍</span>
-        {{event.location}}
-
-      </div>
-       <div class=" text-sm text-gray-600 flex items-center">
-      <span class="mr-2">👥</span>
-      <span>{{ event.assign_to.count }} Participants</span>
-    </div>
-    </div>
-    {% endfor %}
-    <!-- Event 2 -->
-    
-    
-    <!-- Event 3 -->
-    
-    
-    <!-- Event 4 -->
-    
-  </div>
-</div>
-  
-<!-- All Events Section -->
-<div id="" class="bg-gray-700 p-6 rounded-lg shadow">
+<!-- ===================== TODAY'S EVENTS ===================== -->
+{% comment %} <div class="bg-blue-400 p-6 rounded-lg shadow mb-8">
   <div class="flex justify-between items-center mb-6">
-    <h2 class="text-2xl font-bold">{{type}} Events</h2>
-  
-  </div>
-  
-
-
-
-   {% comment %} {% for category in  categorys %}
-      <a href="{% url "user" %}?cat={{category.name}}"><span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 mb-4">
-      {{ category.name }}
+    <h2 class="text-2xl font-bold">Today's Events</h2>
+    <span class="bg-purple-100 text-rose-600 px-3 py-1 rounded-full text-sm font-medium">
+      {{ todays_event }} events today
     </span>
-    </a>
-    {% endfor %}  {% endcomment %}
+  </div>
 
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    {% for event in today %}
+    <div class="bg-gray-100 border border-gray-500 rounded-lg p-3">
 
+      <!-- Image -->
+      {% if event.image %}
+        <img src="{{ event.image.url }}"
+             alt="{{ event.name }}"
+             class="w-full h-32 object-cover rounded-md mb-2">
+      {% else %}
+        <div class="w-full h-32 bg-gray-300 flex items-center justify-center rounded-md mb-2 text-gray-600 text-sm">
+          Event Image
+        </div>
+      {% endif %}
 
-    
+      <h3 class="font-semibold text-gray-800">{{ event.name }}</h3>
+      <p class="text-sm text-gray-700 mt-1">{{ event.description }}</p>
+
+      <div class="mt-2 text-sm text-gray-600">
+        📅 {{ event.date }}
+      </div>
+
+      <div class="text-sm text-gray-600">
+        📍 {{ event.location }}
+      </div>
+
+      <div class="text-sm text-gray-600">
+        👥 {{ event.participant.count }} Participants
+      </div>
+    </div>
+    {% empty %}
+      <p class="col-span-full text-center text-white">
+        No events today.
+      </p>
+    {% endfor %}
+  </div>
+</div> {% endcomment %}
+
+<!-- ===================== ALL EVENTS ===================== -->
+<div class="bg-gray-700 p-6 rounded-lg shadow m-4">
+  <div class="mb-6">
+    <h2 class="text-2xl font-bold text-white">{{ type }} Events</h2>
+  </div>
+
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-    
-      
-    
-    <!-- Event Card 1 -->
- {% for event in events %}
-<div class="bg-white rounded-lg shadow border p-5">
-  <div class="mb-4">
-    <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 mb-2">
-      {{ event.category }}
-    </span>
-    <h3 class="font-bold text-lg text-gray-800 mb-1">{{ event.name }}</h3>
-    <p class="text-gray-600 text-sm">{{ event.description }}</p>
-  </div>
+    {% for event in events %}
+    <div class="bg-white rounded-lg shadow border p-5">
 
-  <div class="space-y-2 text-sm text-gray-500">
-    <div class="flex items-center">
-      <span class="mr-2">📅</span>
-      <span>{{ event.date }}</span>
+      <!-- Image -->
+  <img src={{ event.image.url }}
+       alt={{ event.name }}
+       class="w-full h-40 object-cover rounded-md mb-3">
+
+      <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 mb-2">
+        {{ event.category }}
+      </span>
+
+      <h3 class="font-bold text-lg text-gray-800 mb-1">{{ event.name }}</h3>
+      <p class="text-gray-600 text-sm mb-3">{{ event.description }}</p>
+
+      <div class="space-y-1 text-sm text-gray-500">
+        <div>📅 {{ event.date }}</div>
+        <div>⏰ {{ event.time }}</div>
+        <div>📍 {{ event.location }}</div>
+        <div>👥 {{ event.participant.count }} Participants</div>
+      </div>
+
+      <div class="mt-4 flex space-x-2">
+        <a href="{% url 'update' event.id %}"
+           class="px-3 py-1 bg-blue-700 text-white text-sm rounded-sm">
+          Update
+        </a>
+
+        <form action="{% url 'delete' event.id %}" method="POST">
+          {% csrf_token %}
+          <button type="submit"
+                  class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm rounded"
+                  onclick="return confirm('Are you sure you want to delete this event?');">
+            Delete
+          </button>
+        </form>
+      </div>
     </div>
-
-    <div class="flex items-center">
-      <span class="mr-2">⏰</span>
-      <span>{{ event.time }}</span>
-    </div>
-
-    <div class="flex items-center">
-      <span class="mr-2">📍</span>
-      <span>{{ event.location }}</span>
-    </div>
-
-    <div class="flex items-center">
-      <span class="mr-2">👥</span>
-      <span>{{ event.participants.count }} Participants</span>
-    </div>
-  </div>
-
-  <div class="mt-4 flex space-x-2">
-    <a href="{% url "update" event.id %}" 
-       class="px-3 py-1 bg-blue-700  text-white text-sm  rounded-sm">
-      Update
-    </a>
-
-   <form action="{% url 'delete' event.id %}" method="POST">
-    {% csrf_token %}
-    <button type="submit"
-        class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm rounded"
-        onclick="return confirm('Are you sure you want to delete this event?');">
-        Delete
-    </button>
-</form>
-  </div>
-</div>
-
-{% endfor %}
-
-    <!-- Event Card 2 -->
-    
-    
-    <!-- Event Card 3 -->
-    
-    
-    <!-- Event Card 4 -->
-   
+    {% empty %}
+      <p class="col-span-full text-center text-white">
+        No events found.
+      </p>
+    {% endfor %}
   </div>
 </div>
 
