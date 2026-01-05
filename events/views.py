@@ -10,6 +10,10 @@ from django.contrib.auth.decorators import login_required,user_passes_test,permi
 from django.core.mail import send_mail
 from django.conf import settings
 
+# from django.views import View
+# from django.utils.decorators import method_decorator
+
+
 
 # def is_organiser(user):
 #     return user.groups.filter(name = 'organiser').exists() or user.groups.filter(name = 'admin').exists()
@@ -105,6 +109,23 @@ def event_create(request):
 
     context = {'form':form}
     return render(request,'event/form.html',{'form':form})
+
+# event_create_decorators =[login_required,permission_required('events.add_event',login_url='no-permission')]
+# @method_decorator(event_create_decorators,name='dispatch')
+# class EventCreate(View):
+#     template_name = 'event/form.html'
+#     def get(self,request,*args, **kwargs):
+#         form = EventModelForm()
+#         context = {'form':form}
+#         return render(request,self.template_name,{'form':form})
+#     def post(self,request,*args, **kwargs):
+#         form = EventModelForm(request.POST,request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request,"Event Created Successfully")
+#             return redirect('user')
+
+
 
 @login_required
 @permission_required('events.view_event',login_url='no-permission')

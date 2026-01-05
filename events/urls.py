@@ -3,6 +3,7 @@ from  events.views import home,event_create,create_category,show_Detail,user_das
 urlpatterns = [
     path('manager-dashboard/', manager_dashboard,name='manager'),
     path('event-create/',event_create,name = 'create'),
+    # path('event-create/',EventCreate.as_view(),name = 'create'),
     path('category-create/',create_category,name = 'create-category'),
     # path('create-participant/',create_participnat,name = 'create-participant'),
     # path('create-participant/',paricipant_create,name = 'create-participant'),
