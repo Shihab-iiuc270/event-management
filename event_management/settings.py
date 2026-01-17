@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['http://*.onrender.com','http://127.0.0.1:8000','https://event-management-3-pvhj.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['http://*.onrender.com','http://127.0.0.1:8000','https://event-management-d4u0.onrender.com/']
 
 
 # Application definition
