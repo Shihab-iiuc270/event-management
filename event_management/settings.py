@@ -9,11 +9,9 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
 from pathlib import Path
 from decouple import config
-import dj_database_url,os
-
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,7 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = ['http://*.onrender.com','http://127.0.0.1:8000','https://event-management-d4u0.onrender.com']
 
-
+AUTH_USER_MODEL = 'users.CustomUser'
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,10 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "debug_toolbar",
     'events',
     'users',
     'core',
-    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
@@ -103,7 +101,7 @@ WSGI_APPLICATION = 'event_management.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         # Replace this value with your local database's connection string.
-        default='postgresql://event_management_db_oakx_user:Oijyux2PuETfqqETmKRGDOsbdLpucp2l@dpg-d5l8a8chg0os73c403t0-a.oregon-postgres.render.com/event_management_db_oakx',
+        default='postgresql://event_management_awhw_user:2zoO20ExcQct7jX2IFttpU0zScu8tBIB@dpg-d5ppp6ogjchc73e3ja80-a.virginia-postgres.render.com/event_management_awhw',
         conn_max_age=600
     )
 }
@@ -135,7 +133,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Dhaka'
 
 USE_I18N = True
 
@@ -175,3 +173,6 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 FRONTEND_URL = 'http://127.0.0.1:8000'
 
 LOGIN_URL = 'sign-in'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+

@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User,Group
+from django.contrib.auth.models import Group
 from django.contrib.auth import login, authenticate, logout
-from users.forms import CustomRegistrationForm,CreateGroupForm,AssignRoleForm
+from django.urls import reverse_lazy
+from users.forms import CustomRegistrationForm,CreateGroupForm,AssignRoleForm,CustomPasswordChangeForm,CustomPasswordResetForm,CustomPasswordResetConfirmForm, EditProfileForm
 from django.contrib import messages
 from django.contrib import messages
 from users.forms import LoginForm
@@ -10,8 +11,11 @@ from django.contrib.auth.tokens import default_token_generator
 from django.db.models import Prefetch
 from django.contrib.auth.decorators import login_required,user_passes_test
 from events.models import Event
+from django.contrib.auth.views import LoginView,PasswordResetView,PasswordChangeView,PasswordResetConfirmView
+from django.views.generic import TemplateView,UpdateView
+from django.contrib.auth import get_user_model
 
-
+User = get_user_model()
 def is_admin(user):
     return user.groups.filter(name = 'admin').exists()
 # Create your views here.
@@ -40,7 +44,38 @@ def sign_in(request):
             login(request,user)
             return redirect('home')
     return render(request,'registration/login.html',{'form': form})
+class CustomLoginView(LoginView):
+    form_class = LoginForm
+    def get_success_url(self):
+        next_url = self.request.GET.get("next")
+        return next_url if next_url else super().get_success_url()
+    
+class ChangePassword(PasswordChangeView):
+    template_name = 'accounts/password_change.html'
+    form_class = CustomPasswordChangeForm
 
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'registration/reset_password.html'
+    form_class = CustomPasswordResetForm
+    success_url = reverse_lazy('sign-in')
+    html_email_template_name = 'registration/reset_email.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['protocol'] = 'https' if self.request.is_secure() else 'http'
+        context['domain'] = self.request.get_host()
+        return context
+    def form_valid(self, form):
+        messages.success(self.request,'A Reset Email sent .pls check your email')
+        return super().form_valid(form)
+    
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'registration/reset_password.html'
+    success_url = reverse_lazy('sign-in')
+    form_class = CustomPasswordResetConfirmForm
+    def form_valid(self, form):
+        messages.success(self.request,'Password resets successfully')
+        return super().form_valid(form)
+    
 @login_required
 def sign_out(request):
     if request.method == 'POST':
@@ -81,7 +116,7 @@ def assign_role(request, user_id):
         form = AssignRoleForm(request.POST)
         if form.is_valid():
             role = form.cleaned_data.get('role')
-            user.groups.clear()  # Remove old roles
+            user.groups.clear()
             user.groups.add(role)
             messages.success(request, f"User {user.username} has been assigned to the {role.name} role")
             return redirect('assign-role',user.id)
@@ -129,3 +164,37 @@ def rsvp_event(request, event_id):
         messages.success(request, "You have successfully RSVP'd for the event!")
 
     return redirect('manager')
+
+
+class ProfileView(TemplateView):
+    template_name = 'accounts/profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        context['username'] = user.username
+        context['email'] = user.email
+        context['name'] = user.get_full_name()
+        context['phone_number'] = user.phone_number
+        context['bio'] = user.bio
+        context['profile_image'] = user.profile_image
+        context['member_since'] = user.date_joined
+        context['last_login'] = user.last_login
+        return context
+    
+class EditProfileView(UpdateView):
+    model = User
+    form_class = EditProfileForm
+    template_name = 'accounts/update_profile.html'
+    context_object_name = 'form'
+
+    def get_object(self):
+        return self.request.user
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('profile')
+
+
+    
