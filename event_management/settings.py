@@ -82,12 +82,12 @@ WSGI_APPLICATION = 'event_management.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
@@ -98,13 +98,13 @@ DATABASES = {
 #         'PORT': config('DB_PORT', cast=int)
 #     }
 # }
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         # Replace this value with your local database's connection string.
-#         default='postgresql://event_management_awhw_user:2zoO20ExcQct7jX2IFttpU0zScu8tBIB@dpg-d5ppp6ogjchc73e3ja80-a.virginia-postgres.render.com/event_management_awhw',
-#         conn_max_age=600
-#     )
-# }
+DATABASES = {
+    'default': dj_database_url.config(
+        # Replace this value with your local database's connection string.
+        default='postgresql://event_management_awhw_user:2zoO20ExcQct7jX2IFttpU0zScu8tBIB@dpg-d5ppp6ogjchc73e3ja80-a.virginia-postgres.render.com/event_management_awhw',
+        conn_max_age=600
+    )
+}
 # https://meet.google.com/mrm-dhha-tkz
 
 
