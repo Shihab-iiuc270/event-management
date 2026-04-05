@@ -157,6 +157,10 @@ def rsvp_event(request, event_id):
     event = Event.objects.get(id=event_id)
     user = request.user
 
+    if user.is_superuser or user.groups.filter(name__in=["admin", "organiser"]).exists():
+        messages.error(request, "You don't have permission to reserve seats for events.")
+        return redirect("manager")
+
     if event.participant.filter(id=user.id).exists():
         messages.warning(request, "You have already RSVP'd for this event.")
     else:

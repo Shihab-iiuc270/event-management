@@ -1,23 +1,25 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="{% static 'css/output.css'%}">
-</head>
-<body>
-    <div class ='w-1/2 mx-auto'>
-    <div>
-        
-    </div >
-    <form  method ="POST" class="w-1/2  text-xl" >
-        {% csrf_token %}
-        {{form.as_p}}
-       <button type='submit' class="bg-rose-600 px-3 py-2 text-white mt-3 rounded-md">Submit</button>
+{% extends "base.html" %}
 
-    </form>
-</div>
-</body>
-</html>
+{% block title %}Update Event{% endblock title %}
+
+{% block content %}
+  <div class="container mx-auto px-6 py-10 sm:py-12">
+    <div class="flex items-end justify-between gap-4">
+      <div>
+        <p class="text-xs font-bold tracking-widest text-slate-500">EVENT</p>
+        <h1 class="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">Update event</h1>
+      </div>
+      <a class="btn-outline" href="{% url 'user' %}">Back</a>
+    </div>
+
+    <div class="mt-8 max-w-2xl">
+      <div class="card">
+        <form method="POST" enctype="multipart/form-data" class="space-y-4">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" class="btn-primary">Save changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

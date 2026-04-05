@@ -1,76 +1,313 @@
 {% extends "base.html" %}
-{% block content %}
-      <!-- Hero Section -->
-      <section class="bg-gray-900 text-white py-32 md:py-40">
-        <div class="container mx-auto px-6 text-center">
-          <h1 class="text-4xl md:text-5xl font-bold mb-6">
-            Join you favourite Events
-          </h1>
-          <p class="text-xl mb-12">
-            Empower yourself with our intuitive event management solution
-          </p>
-          <a
-            href="#"
-            class="bg-white text-blue-600 px-8 py-4 rounded-md font-semibold text-lg hover:bg-gray-100 transition duration-300"
-            >Get Started</a
-          >
-        </div>
-      </section>
+{% load static %}
 
-      <!-- Features Section -->
-      <section class="py-24 md:py-32">
-        <div class="container mx-auto px-6">
-          <h2 class="text-3xl font-bold text-center mb-16">
-            Tailored for Every Role
-          </h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <!-- Admin Card -->
-            <div class="bg-white rounded-lg shadow-md p-8">
-              <h3 class="text-2xl font-semibold mb-6">Admin</h3>
-              <ul class="list-disc list-inside text-gray-600 space-y-3">
-                <li>Manage user roles and permissions</li>
-                <li>Generate comprehensive reports</li>
-                <li>Configure system-wide settings</li>
-                <li>Monitor team performance</li>
-              </ul>
+{% block title %}Home{% endblock title %}
+
+{% block content %}
+  <section class="relative isolate overflow-hidden bg-slate-950">
+    <img src="{% static 'event-hero.jpg' %}" alt="Event background" class="absolute inset-0 -z-10 h-full w-full object-cover opacity-35" />
+    <div class="absolute inset-0 -z-10 bg-gradient-to-r from-slate-950/95 via-slate-950/70 to-slate-950/25"></div>
+
+    <div class="container mx-auto px-6 py-14 sm:py-18 lg:py-24">
+      <div class="grid items-center gap-10 lg:grid-cols-12">
+        <div class="lg:col-span-5">
+          {% if latest_events %}
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="badge">{{ latest_events.0.category.name }}</span>
+              <span class="text-white/60 text-sm">•</span>
+              <span class="text-white/80 text-sm">{{ latest_events.0.date }} at {{ latest_events.0.time|time:"H:i" }}</span>
             </div>
-            <!-- Manager Card -->
-            <div class="bg-white rounded-lg shadow-md p-8">
-              <h3 class="text-2xl font-semibold mb-6">organiser</h3>
-              <ul class="list-disc list-inside text-gray-600 space-y-3">
-                <li>Create  Events</li>
-                <li>Update and Delete Events</li>
-                <li>Category creating</li>
-                <li>Update and Delete categories</li>
-              </ul>
+            <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
+              {{ latest_events.0.name }}
+            </h1>
+            <p class="mt-4 text-lg text-white/80 max-w-xl">
+              {{ latest_events.0.location }} — reserve your seat and keep track of your events from one dashboard.
+            </p>
+
+            <div class="mt-7" data-countdown data-countdown-date="{{ latest_events.0.date|date:'Y-m-d' }}" data-countdown-time="{{ latest_events.0.time|time:'H:i' }}">
+              <p class="text-xs font-bold tracking-widest text-white/60">STARTS IN</p>
+              <div class="mt-3 grid grid-cols-4 gap-3 max-w-md">
+                <div class="countbox">
+                  <p class="countnum" data-countdown-days>0</p>
+                  <p class="countlbl">Days</p>
+                </div>
+                <div class="countbox">
+                  <p class="countnum" data-countdown-hours>00</p>
+                  <p class="countlbl">Hours</p>
+                </div>
+                <div class="countbox">
+                  <p class="countnum" data-countdown-minutes>00</p>
+                  <p class="countlbl">Minutes</p>
+                </div>
+                <div class="countbox">
+                  <p class="countnum" data-countdown-seconds>00</p>
+                  <p class="countlbl">Seconds</p>
+                </div>
+              </div>
             </div>
-            <!-- Employee Card -->
-            <div class="bg-white rounded-lg shadow-md p-8">
-              <h3 class="text-2xl font-semibold mb-6">User</h3>
-              <ul class="list-disc list-inside text-gray-600 space-y-3">
-                <li>View and Events</li>
-                <li>Can reserve Events</li>
-                <li>Dashboard to see reserved Events</li>
-              </ul>
+
+            <div class="mt-8 flex flex-wrap gap-3">
+              <a class="btn-primary" href="/events/event-detail/{{ latest_events.0.id }}/">View details</a>
+              {% if can_rsvp %}
+                <a class="btn-outline" href="{% url 'rsvp' latest_events.0.id %}">Reserve seat</a>
+              {% elif request.user.is_authenticated %}
+              {% else %}
+                <a class="btn-outline" href="{% url 'sign-in' %}">Login to reserve</a>
+              {% endif %}
+              <a class="btn-ghost" href="/events/">Browse events</a>
+            </div>
+          {% else %}
+            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
+              Welcome to Event Management
+            </h1>
+            <p class="mt-4 text-lg text-white/80 max-w-xl">
+              Create and discover events, reserve seats, and manage everything with a modern dashboard experience.
+            </p>
+
+            <div class="mt-8 flex flex-wrap gap-3">
+              {% if request.user.is_authenticated %}
+                <a class="btn-primary" href="/events/manager-dashboard/">Dashboard</a>
+              {% else %}
+                <a class="btn-primary" href="{% url 'sign-up' %}">Register Now</a>
+                <a class="btn-outline" href="{% url 'sign-in' %}">Login</a>
+              {% endif %}
+              <a class="btn-ghost" href="/events/">Browse events</a>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="lg:col-span-7">
+          <div class="grid gap-4 sm:grid-cols-2">
+            {% for e in featured_events %}
+              <div class="hero-event-card">
+                <div class="relative h-52 sm:h-56">
+                  {% if e.image %}
+                    <img src="{{ e.image.url }}" alt="{{ e.name }}" class="h-full w-full object-cover" />
+                  {% else %}
+                    <div class="h-full w-full bg-gradient-to-br from-primary-500/40 to-fuchsia-500/30"></div>
+                  {% endif %}
+                  <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent"></div>
+                  <div class="absolute bottom-4 left-4 right-4">
+                    <span class="badge">{{ e.category.name }}</span>
+                    <p class="mt-2 text-xl font-extrabold text-white leading-tight line-clamp-2">{{ e.name }}</p>
+                    <p class="mt-1 text-sm text-white/80">{{ e.date }} at {{ e.time|time:"H:i" }} • {{ e.location }}</p>
+                  </div>
+                </div>
+                <div class="p-4 sm:p-5 flex items-center justify-between gap-3">
+                  <a class="btn-mini bg-white/15 hover:bg-white/20" href="/events/event-detail/{{ e.id }}/">Register Now</a>
+                  <a class="text-sm font-semibold text-white/80 hover:text-white" href="/events/event-detail/{{ e.id }}/">Tickets & details</a>
+                </div>
+              </div>
+            {% empty %}
+              <div class="card-glass p-6 sm:col-span-2">
+                <p class="text-white font-semibold">No upcoming events yet</p>
+                <p class="mt-1 text-sm text-white/70">Create your first event to showcase it on the homepage.</p>
+                <div class="mt-4">
+                  <a class="btn-primary" href="/events/event-create/">Submit event</a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 sm:py-16 bg-transparent">
+    <div class="container mx-auto px-6">
+      <div class="grid gap-8 lg:grid-cols-12">
+        <div class="lg:col-span-5">
+          <p class="text-xs font-bold tracking-widest text-slate-500">WHAT YOU WANT</p>
+          <h2 class="section-title mt-2">Find best event for you</h2>
+          <p class="mt-2 text-slate-600">Search by category, browse featured events, and reserve quickly.</p>
+        </div>
+
+        <div class="lg:col-span-7">
+          <form action="/events/" method="get" class="grid gap-3 sm:grid-cols-3">
+            <div class="sm:col-span-2">
+              <input
+                name="q"
+                type="text"
+                placeholder="Search by name or location"
+                class="input"
+              />
+            </div>
+            <div>
+              <select name="cat" class="input">
+                <option value="">All categories</option>
+                {% for c in categories %}
+                  <option value="{{ c.name }}">{{ c.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="sm:col-span-3 flex flex-wrap gap-3">
+              <button class="btn-primary" type="submit">Search</button>
+              <a class="btn-outline" href="/events/">Explore all</a>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="feature-card">
+          <p class="feature-title">7/24 event available</p>
+          <p class="feature-desc">Browse upcoming and past events anytime with powerful filtering.</p>
+        </div>
+        <div class="feature-card">
+          <p class="feature-title">Great locations</p>
+          <p class="feature-desc">Clear venue information so attendees know where to go.</p>
+        </div>
+        <div class="feature-card">
+          <p class="feature-title">Organiser dashboard</p>
+          <p class="feature-desc">Create, update, and manage categories and events with ease.</p>
+        </div>
+        <div class="feature-card">
+          <p class="feature-title">Reserve with confidence</p>
+          <p class="feature-desc">Users can reserve events and track them from their dashboard.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 sm:py-16 bg-transparent">
+    <div class="container mx-auto px-6">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 class="section-title">All events</h2>
+          <p class="mt-2 text-slate-600">Upcoming first, then past events.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <a class="chip {% if active_category == 'All' %}chip-active{% else %}chip-inactive{% endif %}" href="/">All</a>
+          {% for c in categories|slice:":6" %}
+            <a class="chip {% if active_category == c.name %}chip-active{% else %}chip-inactive{% endif %}" href="/?cat={{ c.name }}">{{ c.name }}</a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {% for e in events %}
+          <article class="card overflow-hidden p-0 flex flex-col">
+            <a href="/events/event-detail/{{ e.id }}/" class="block flex-1">
+              <div class="relative h-40 w-full overflow-hidden">
+                {% if e.image %}
+                  <img src="{{ e.image.url }}" alt="{{ e.name }}" class="h-full w-full object-cover transition duration-500 hover:scale-[1.03]" />
+                {% else %}
+                  <div class="h-full w-full bg-gradient-to-br from-primary-200 to-fuchsia-200"></div>
+                {% endif %}
+                <div class="absolute left-3 top-3">
+                  <span class="badge-dark">{{ e.category.name }}</span>
+                </div>
+              </div>
+              <div class="p-5">
+                <p class="text-sm text-slate-500">{{ e.date }} at {{ e.time|time:"H:i" }} • {{ e.location }}</p>
+                <p class="mt-1 font-bold text-slate-900 line-clamp-2">{{ e.name }}</p>
+                <p class="mt-2 text-sm text-slate-600 line-clamp-2">{{ e.description }}</p>
+              </div>
+            </a>
+            <div class="px-5 pb-5 flex items-center justify-between">
+              <a class="text-sm font-semibold text-primary-700 hover:text-primary-800" href="/events/event-detail/{{ e.id }}/">Details</a>
+              {% if can_rsvp %}
+                <a class="btn-mini" href="{% url 'rsvp' e.id %}">Reserve</a>
+              {% elif request.user.is_authenticated %}
+              {% else %}
+                <a class="btn-mini" href="{% url 'sign-in' %}">Login</a>
+              {% endif %}
+            </div>
+          </article>
+        {% empty %}
+          <div class="card p-6 sm:col-span-2 lg:col-span-4">
+            <p class="text-slate-900 font-semibold">No events found</p>
+            <p class="mt-1 text-sm text-slate-600">Try removing the category filter or check back later.</p>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="mt-10 text-center">
+        <a class="btn-outline" href="/events/">See all events</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 sm:py-16 bg-transparent">
+    <div class="container mx-auto px-6">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p class="text-xs font-bold tracking-widest text-slate-500">TESTIMONIALS</p>
+          <h2 class="section-title mt-2">People love the experience</h2>
+          <p class="mt-2 text-slate-600">Clean UI, fast flows, and a dashboard that’s easy to understand.</p>
+        </div>
+      </div>
+
+      <div class="mt-8" data-carousel data-carousel-interval="6500">
+        <div class="carousel-viewport" data-carousel-viewport>
+          <div class="carousel-track gap-4 pr-2" data-carousel-track>
+            <div class="carousel-slide basis-[92%] sm:basis-1/2 lg:basis-1/3" data-carousel-slide>
+              <div class="quote-card h-full">
+                <p class="text-slate-700">“The homepage is beautiful and the event browsing is super smooth on mobile.”</p>
+                <div class="mt-4 text-sm">
+                  <p class="font-semibold text-slate-900">isa MERCAN</p>
+                  <p class="text-slate-600">Organiser</p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-slide basis-[92%] sm:basis-1/2 lg:basis-1/3" data-carousel-slide>
+              <div class="quote-card h-full">
+                <p class="text-slate-700">“Filtering by category and reserving an event takes just a few seconds.”</p>
+                <div class="mt-4 text-sm">
+                  <p class="font-semibold text-slate-900">Nusrat Jahan</p>
+                  <p class="text-slate-600">Attendee</p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-slide basis-[92%] sm:basis-1/2 lg:basis-1/3" data-carousel-slide>
+              <div class="quote-card h-full">
+                <p class="text-slate-700">“As an organiser, the dashboard makes it easy to keep everything updated.”</p>
+                <div class="mt-4 text-sm">
+                  <p class="font-semibold text-slate-900">Arif Hasan</p>
+                  <p class="text-slate-600">Organiser</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </section>
 
-      <!-- Call to Action -->
-      <section class="bg-gray-200 py-24 md:py-32">
-        <div class="container mx-auto px-6 text-center">
-          <h2 class="text-3xl font-bold mb-6">
-            Ready to Boost Your Team's Productivity?
-          </h2>
-          <p class="text-xl mb-12">
-            Join thousands of organizations already using Event Management
-          </p>
-          <a
-            href="#"
-            class="bg-blue-500 text-white px-8 py-4 rounded-md font-semibold text-lg hover:bg-blue-600 transition duration-300"
-            >Start Free Trial</a
-          >
+        <div class="mt-5 flex items-center justify-between">
+          <div class="flex items-center gap-2" data-carousel-dots></div>
+          <div class="flex items-center gap-2">
+            <button type="button" class="carousel-btn-light" data-carousel-prev aria-label="Previous">Prev</button>
+            <button type="button" class="carousel-btn-light" data-carousel-next aria-label="Next">Next</button>
+          </div>
         </div>
-      </section>
-    {% endblock content %}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 sm:py-16 bg-transparent">
+    <div class="container mx-auto px-6">
+      <div class="grid gap-10 lg:grid-cols-12">
+        <div class="lg:col-span-5">
+          <h2 class="section-title">Create your own new event</h2>
+          <p class="mt-2 text-slate-600">
+            Bring people together, or turn your passion into a business. Create events, manage attendees, and grow.
+          </p>
+          <div class="mt-6 flex gap-3">
+            <a class="btn-primary" href="/events/event-create/">Submit event</a>
+            <a class="btn-ghost" href="/events/">Learn more</a>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7">
+          <div class="rounded-2xl border border-slate-200/70 bg-white/70 backdrop-blur p-6 sm:p-8 shadow-sm shadow-slate-200/40">
+            <p class="text-slate-700">
+              Ready to host your next event? Add an event with an image, date, and category — it will instantly appear on the homepage slider.
+            </p>
+            <div class="mt-5 flex flex-wrap gap-3">
+              <a class="btn-primary" href="/events/event-create/">Submit event</a>
+              <a class="btn-outline" href="/events/">See events</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

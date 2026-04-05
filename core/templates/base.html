@@ -5,7 +5,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
     <title> {% block title %}{% endblock title %} </title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -19,7 +18,14 @@
       }
     </style>
   </head>
-  <body class="font-sans bg-gray-100">
+  <body class="relative min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+    <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-white via-primary-50/35 to-fuchsia-50/35"></div>
+      <div class="absolute -top-40 -left-40 h-[32rem] w-[32rem] rounded-full bg-primary-500/15 blur-3xl"></div>
+      <div class="absolute top-24 -right-56 h-[38rem] w-[38rem] rounded-full bg-fuchsia-500/12 blur-3xl"></div>
+      <div class="absolute -bottom-56 left-1/2 h-[40rem] w-[40rem] -translate-x-1/2 rounded-full bg-sky-500/10 blur-3xl"></div>
+    </div>
+  {% include "topbar.html" %}
   {% if request.user.is_authenticated %}
     {% if request.user.is_superuser %}
         {% include "admin_nav.html" %}
@@ -33,83 +39,57 @@
 
 
      
-    <main>
+    <main class="flex-1">
         {% block content %}
         
         {% endblock content %}
     </main>
-    <footer class="bg-gray-800 text-white py-12">
+    <footer id="footer" class="bg-slate-950 text-white py-12">
       <div class="container mx-auto px-6">
-        <div class="flex flex-wrap justify-between">
-          <div class="w-full md:w-1/4 mb-8 md:mb-0">
-            <h3 class="text-lg font-semibold mb-4">Event Management</h3>
-            <p class="text-gray-400">
-              Empowering teams with efficient task management solutions.
+        <div class="grid gap-10 md:grid-cols-4">
+          <div>
+            <h3 class="text-lg font-semibold">Event Management</h3>
+            <p class="mt-3 text-white/70">
+              Find events, reserve your seat, and manage everything in one place.
             </p>
           </div>
-          <div class="w-full md:w-1/4 mb-8 md:mb-0">
-            <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
-            <ul class="text-gray-400 space-y-2">
-              <li><a href="#" class="hover:text-white">Home</a></li>
-              <li><a href="#" class="hover:text-white">Features</a></li>
-              <li><a href="#" class="hover:text-white">Pricing</a></li>
-              <li><a href="#" class="hover:text-white">Contact</a></li>
+          <div>
+            <h4 class="text-sm font-semibold tracking-wide text-white/90">Popular searches</h4>
+            <ul class="mt-4 space-y-2 text-white/70">
+              <li><a class="hover:text-white" href="/events/">Online Registration</a></li>
+              <li><a class="hover:text-white" href="/events/">Sell Event Tickets</a></li>
+              <li><a class="hover:text-white" href="/events/">Post Events</a></li>
+              <li><a class="hover:text-white" href="/events/">Event Management</a></li>
             </ul>
           </div>
-          <div class="w-full md:w-1/4 mb-8 md:mb-0">
-            <h4 class="text-lg font-semibold mb-4">Connect</h4>
-            <ul class="text-gray-400 space-y-2">
-              <li><a href="#" class="hover:text-white">Twitter</a></li>
-              <li><a href="#" class="hover:text-white">LinkedIn</a></li>
-              <li><a href="#" class="hover:text-white">Facebook</a></li>
+          <div>
+            <h4 class="text-sm font-semibold tracking-wide text-white/90">Quick links</h4>
+            <ul class="mt-4 space-y-2 text-white/70">
+              <li><a class="hover:text-white" href="/">Home</a></li>
+              <li><a class="hover:text-white" href="/events/">Events</a></li>
+              <li><a class="hover:text-white" href="{% url 'sign-in' %}">Login</a></li>
+              <li><a class="hover:text-white" href="{% url 'sign-up' %}">Register</a></li>
             </ul>
           </div>
-          <div class="w-full md:w-1/4">
-            <h4 class="text-lg font-semibold mb-4">Newsletter</h4>
-            <form class="flex">
-              <input
-                type="email"
-                placeholder="Your email"
-                class="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded-l-md focus:outline-none"
-                required
-              />
-              <button
-                type="submit"
-                class="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition duration-300"
-              >
-                Subscribe
-              </button>
-            </form>
+          <div>
+            <h4 class="text-sm font-semibold tracking-wide text-white/90">Contact</h4>
+            <p class="mt-4 text-white/70">+880 1XXX-XXXXXX</p>
+            <p class="mt-1 text-white/70">support@example.com</p>
+            <div class="mt-4 flex gap-3">
+              <a class="rounded-full bg-white/10 px-3 py-1 text-xs text-white/80 hover:bg-white/15" href="#">Facebook</a>
+              <a class="rounded-full bg-white/10 px-3 py-1 text-xs text-white/80 hover:bg-white/15" href="#">Twitter</a>
+              <a class="rounded-full bg-white/10 px-3 py-1 text-xs text-white/80 hover:bg-white/15" href="#">LinkedIn</a>
+            </div>
           </div>
         </div>
         <div
-          class="border-t border-gray-700 mt-12 pt-8 text-sm text-center text-gray-400"
+          class="border-t border-white/10 mt-12 pt-8 text-sm text-center text-white/60"
         >
           &copy; 2026 EventManagement. All rights reserved.
         </div>
       </div>
     </footer>
 
-     <script>
-      document
-        .getElementById("menu-toggle")
-        .addEventListener("click", function () {
-          document.getElementById("mobile-menu").classList.toggle("hidden");
-        });
-
-      document
-        .getElementById("user-menu-button")
-        .addEventListener("click", function () {
-          document.getElementById("user-menu").classList.toggle("hidden");
-        });
-
-      // Close the dropdown when clicking outside
-      window.addEventListener("click", function (e) {
-        if (!document.getElementById("user-menu-button").contains(e.target)) {
-          document.getElementById("user-menu").classList.add("hidden");
-        }
-      });
-    </script>
-    </script>
+    <script src="{% static 'js/site.js' %}"></script>
   </body>
 </html>

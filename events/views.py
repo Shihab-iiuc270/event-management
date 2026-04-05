@@ -29,10 +29,13 @@ def is_organiser(user):
 
 def home(request):
     type = request.GET.get('cat')
+    search = request.GET.get('q')
     events = Event.objects.select_related('category').all()
     today = Event.objects.filter(date=date.today())
     if type:
         events = events.filter(category__name=type)
+    if search:
+        events = events.filter(Q(name__icontains=search) | Q(location__icontains=search))
     categories = Category.objects.all()
     return render(request, "dashboard/home.html",{'events':events,'categories':categories,'today':today})
 
@@ -44,9 +47,22 @@ def manager_dashboard(request):
 class UserDashboard(LoginRequiredMixin,View):
     template_name = 'dashboard/manager_dashboard.html'
     def get(self,request,*args, **kwargs):
-        base_q = Event.objects.select_related('category')
+        category_name = request.GET.get("cat")
+        search = request.GET.get("q")
+
+        base_q = Event.objects.select_related("category")
         events = base_q.all()
-        return render(request,self.template_name,{'events':events})
+        if category_name:
+            events = events.filter(category__name=category_name)
+        if search:
+            events = events.filter(Q(name__icontains=search) | Q(location__icontains=search))
+
+        context = {
+            "events": events,
+            "categories": Category.objects.all().order_by("name"),
+            "active_category": category_name or "All",
+        }
+        return render(request, self.template_name, context)
 
 @user_passes_test(is_organiser,login_url='no-permission')
 def user_dashboard(request):
@@ -96,7 +112,7 @@ def search_events(request):
     search = request.GET.get('q')
     start_date = request.GET.get('start')
     end_date = request.GET.get('end')
-    base_q = Event.objects.select_related('category').prefetch_related('participants')
+    base_q = Event.objects.select_related('category').prefetch_related('participant')
     events = base_q.all()
     if search :
         events = events.filter(
@@ -106,7 +122,12 @@ def search_events(request):
     if start_date and end_date:
         events = events.filter(date__range=[start_date, end_date])
 
-    return render(request, "dashboard/home.html", {'events': events})
+    context = {
+        "events": events,
+        "categories": Category.objects.all(),
+        "today": base_q.filter(date=date.today()),
+    }
+    return render(request, "dashboard/home.html", context)
 
 @login_required
 @permission_required('events.add_event',login_url='no-permission')
@@ -142,10 +163,8 @@ class EventCreate(LoginRequiredMixin,PermissionRequiredMixin,View):
 
 
 
-@login_required
-@permission_required('events.view_event',login_url='no-permission')
 def show_Detail(request,id):
-    event = Event.objects.select_related('category').prefetch_related('participants').get(id=id)
+    event = Event.objects.select_related('category').prefetch_related('participant').get(id=id)
     context = {'event':event}
     return render(request,'event/detail.html',context)
 

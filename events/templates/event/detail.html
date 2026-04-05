@@ -1,24 +1,90 @@
-{% extends 'dashboard/base.html' %}
-{% block title %}Event Detail{% endblock %}
+{% extends "base.html" %}
 
-{% block base %}
-<div class="bg-gray-700 p-6 text-white rounded shadow mx-auto py-3 my-4 ">
-    <h2 class="text-2xl font-bold mb-2">{{ event.name }}</h2>
-    <p><strong>Category:</strong> {{ event.category.name }}</p>
-    <p><strong>Date:</strong> {{ event.date }}</p>
-    <p><strong>Time:</strong> {{ event.time }}</p>
-    <p><strong>Location:</strong> {{ event.location }}</p>
+{% block title %}{{ event.name }}{% endblock title %}
 
-    <p class="mt-3">{{ event.description }}</p>
+{% block content %}
+  <section class="relative isolate overflow-hidden bg-slate-950">
+    {% if event.image %}
+      <img src="{{ event.image.url }}" alt="{{ event.name }}" class="absolute inset-0 -z-10 h-full w-full object-cover opacity-40" />
+    {% endif %}
+    <div class="absolute inset-0 -z-10 bg-gradient-to-r from-slate-950/95 via-slate-950/75 to-slate-950/30"></div>
 
-    <h3 class="text-xl font-semibold mt-5">Participants</h3>
-    <ul class="list-disc ml-6">
-        {% for participant in event.participants.all %}
-            <li>{{ participant.name }} ({{ participant.email }})</li>
-        {% empty %}
-            <li>No participants yet</li>
-        {% endfor %}
-    </ul>
-</div>
-{% endblock %}
+    <div class="container mx-auto px-6 py-12 sm:py-16">
+      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="badge">{{ event.category.name }}</span>
+            <span class="text-white/60 text-sm">•</span>
+            <span class="text-white/80 text-sm">{{ event.date }} at {{ event.time|time:"H:i" }}</span>
+          </div>
+          <h1 class="mt-4 text-3xl sm:text-4xl font-extrabold tracking-tight text-white">{{ event.name }}</h1>
+          <p class="mt-3 text-white/80 max-w-2xl">{{ event.description }}</p>
+          <p class="mt-4 text-sm text-white/75">Location: <span class="text-white">{{ event.location }}</span></p>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          <a class="btn-outline" href="/events/">Back to events</a>
+          {% if can_rsvp %}
+            <a class="btn-primary" href="{% url 'rsvp' event.id %}">Reserve seat</a>
+          {% elif request.user.is_authenticated %}
+          {% else %}
+            <a class="btn-primary" href="{% url 'sign-in' %}">Login to reserve</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-10 sm:py-12 bg-white">
+    <div class="container mx-auto px-6">
+      <div class="grid gap-6 lg:grid-cols-12">
+        <div class="lg:col-span-8">
+          <div class="card">
+            <h2 class="text-xl font-extrabold text-slate-900">Event details</h2>
+            <div class="mt-5 grid gap-4 sm:grid-cols-2">
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <p class="text-xs font-bold tracking-widest text-slate-500">DATE</p>
+                <p class="mt-2 font-semibold text-slate-900">{{ event.date }}</p>
+              </div>
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <p class="text-xs font-bold tracking-widest text-slate-500">TIME</p>
+                <p class="mt-2 font-semibold text-slate-900">{{ event.time|time:"H:i" }}</p>
+              </div>
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
+                <p class="text-xs font-bold tracking-widest text-slate-500">LOCATION</p>
+                <p class="mt-2 font-semibold text-slate-900">{{ event.location }}</p>
+              </div>
+            </div>
+
+            <div class="mt-8">
+              <h3 class="text-lg font-extrabold text-slate-900">About this event</h3>
+              <p class="mt-3 text-slate-700">{{ event.description }}</p>
+            </div>
+          </div>
+        </div>
+
+        <aside class="lg:col-span-4">
+          <div class="card">
+            <div class="flex items-center justify-between gap-3">
+              <h3 class="text-lg font-extrabold text-slate-900">Attendees</h3>
+              <span class="chip chip-inactive">{{ event.participant.count }}</span>
+            </div>
+            <div class="mt-4 space-y-3">
+              {% for u in event.participant.all|slice:":8" %}
+                <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3">
+                  <div class="min-w-0">
+                    <p class="font-semibold text-slate-900 truncate">{{ u.username }}</p>
+                    <p class="text-sm text-slate-600 truncate">{{ u.email }}</p>
+                  </div>
+                </div>
+              {% empty %}
+                <p class="text-sm text-slate-600">No attendees yet.</p>
+              {% endfor %}
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+{% endblock content %}
 

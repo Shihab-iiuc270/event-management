@@ -43,7 +43,9 @@ def send_rsvp_email(sender, instance, action, pk_set, **kwargs):
 
     if action == "post_add":
         for user_id in pk_set:
-            user = instance.participant.get(id=user_id)
+            user = instance.participant.filter(id=user_id).first()
+            if not user or not getattr(user, "email", None):
+                continue
 
             subject = "Event RSVP Confirmation"
             message = (
@@ -55,10 +57,18 @@ def send_rsvp_email(sender, instance, action, pk_set, **kwargs):
                 f"Thank you!"
             )
 
-            send_mail(
-                subject,
-                message,
-                settings.EMAIL_HOST_USER,
-                [user.email],
-                fail_silently=False
-            )
+            from_email = getattr(settings, "DEFAULT_FROM_EMAIL", None) or settings.EMAIL_HOST_USER
+            if not from_email:
+                continue
+
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    from_email,
+                    [user.email],
+                    fail_silently=False,
+                )
+            except Exception as e:
+                # Never break RSVP flow if SMTP is misconfigured (e.g. Gmail BadCredentials).
+                print(f"Failed to send RSVP email to {user.email}: {str(e)}")

@@ -1,0 +1,39 @@
+{% if latest_events %}
+  <div class="hidden sm:block bg-slate-950 text-white">
+    <div class="container mx-auto px-6 py-2 flex items-center justify-between gap-6">
+      <div class="flex items-center gap-3 text-sm">
+        {% if request.user.is_authenticated %}
+          <a class="topbar-link" href="/events/manager-dashboard/">Dashboard</a>
+          <span class="topbar-sep">|</span>
+          <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="topbar-link" type="submit">Logout</button>
+          </form>
+        {% else %}
+          <a class="topbar-link" href="{% url 'sign-up' %}">Register Now</a>
+          <span class="topbar-sep">|</span>
+          <a class="topbar-link" href="{% url 'sign-in' %}">Login</a>
+        {% endif %}
+      </div>
+
+      <div class="flex items-center gap-3 min-w-0">
+        <span class="text-sm font-semibold whitespace-nowrap">Latest Event:</span>
+        <div class="ticker" aria-label="Latest events ticker">
+          <div class="ticker-track">
+            {% for e in latest_events %}
+              <a class="ticker-item" href="/events/event-detail/{{ e.id }}/">
+                {{ e.name }} <span class="ticker-meta">“{{ e.date }} at {{ e.time|time:"H:i" }} on {{ e.location }}”</span>
+              </a>
+            {% endfor %}
+            {% for e in latest_events %}
+              <a class="ticker-item" href="/events/event-detail/{{ e.id }}/">
+                {{ e.name }} <span class="ticker-meta">“{{ e.date }} at {{ e.time|time:"H:i" }} on {{ e.location }}”</span>
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
